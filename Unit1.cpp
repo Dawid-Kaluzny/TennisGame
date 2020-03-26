@@ -4,14 +4,42 @@
 #pragma hdrstop
 
 #include "Unit1.h"
+#include "mmsystem.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 TMatchBoardForm *MatchBoardForm;
+
+int xBall = 15;
+int yBall = 15;
 //---------------------------------------------------------------------------
 __fastcall TMatchBoardForm::TMatchBoardForm(TComponent* Owner)
         : TForm(Owner)
 {
+}
+//---------------------------------------------------------------------------
+
+void bounceBall(TImage* RacketImage)
+{
+        int flightDirection;
+
+        if((MatchBoardForm->BallImage->Top >= RacketImage->Top + RacketImage->Height/2 - MatchBoardForm->BallImage->Height) && (MatchBoardForm->BallImage->Top <= RacketImage->Top + RacketImage->Height/2))
+        {
+                xBall = -1.14 * xBall;
+                yBall = yBall / 1.07;
+        }
+        else
+        {
+                xBall = -1.07 * xBall;
+                yBall = 1.07 * yBall;
+        }
+
+        flightDirection = random(2) + 1;
+        
+        if(flightDirection == 1)
+        {
+                yBall = -yBall;
+        }
 }
 //---------------------------------------------------------------------------
 
@@ -71,4 +99,38 @@ void __fastcall TMatchBoardForm::FormKeyUp(TObject *Sender, WORD &Key,
 }
 //---------------------------------------------------------------------------
 
+
+void __fastcall TMatchBoardForm::BallTimerTimer(TObject *Sender)
+{
+        BallImage->Left += xBall;
+        BallImage->Top += yBall;
+
+        if(BallImage->Top - 10 <= CourtImage->Top) yBall = -yBall;
+        if(BallImage->Top + BallImage->Height + 10 >= CourtImage->Top + CourtImage->Height) yBall = -yBall;
+
+        if((BallImage->Top + BallImage->Height/2 >= Racket1Image->Top) && (BallImage->Top + BallImage->Height/2 <= Racket1Image->Top + Racket1Image->Height) && (BallImage->Left - 10 <= Racket1Image->Left + Racket1Image->Width))
+        {
+                sndPlaySound("snd/Player1.wav", SND_ASYNC);
+                bounceBall(Racket1Image);
+        }
+
+        if((BallImage->Top + BallImage->Height/2 >= Racket2Image->Top) && (BallImage->Top + BallImage->Height/2 <= Racket2Image->Top + Racket2Image->Height) && (BallImage->Left + BallImage->Width + 10 >= Racket2Image->Left))
+        {
+                sndPlaySound("snd/Player2.wav", SND_ASYNC);
+                bounceBall(Racket2Image);
+        }
+
+        if((BallImage->Left + BallImage->Width <= Racket1Image->Left) || (BallImage->Left >= Racket2Image->Left + Racket2Image->Width))
+        {
+                BallTimer->Enabled = false;
+        }
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMatchBoardForm::FormCreate(TObject *Sender)
+{
+        randomize();
+}
+//---------------------------------------------------------------------------
 

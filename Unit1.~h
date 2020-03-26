@@ -11,25 +11,43 @@
 #include <Graphics.hpp>
 #include <jpeg.hpp>
 //---------------------------------------------------------------------------
-class TMatchBoard : public TForm
+class TMatchBoardForm : public TForm
 {
 __published:	// IDE-managed Components
-        TImage *Court;
-        TImage *Fans;
-        TImage *CourtBackground;
-        TLabel *Label1;
-        TLabel *Label2;
-        TImage *ScoreBoard;
-        TImage *Image1;
-        TImage *Image2;
-        TLabel *Label4;
-        TLabel *Label3;
+        TImage *FansImage;
+        TImage *CourtBackgroundImage;
+        TLabel *SetsLabel;
+        TLabel *GamesLabel;
+        TImage *ScoreBoardImage;
+        TImage *Player1Image;
+        TImage *Player2Image;
+        TLabel *PlayerName1Label;
+        TLabel *PlayerName2Label;
+        TImage *Racket1Image;
+        TImage *Racket2Image;
+        TTimer *Player1UpTimer;
+        TTimer *Player1DownTimer;
+        TTimer *Player2UpTimer;
+        TTimer *Player2DownTimer;
+        TImage *CourtImage;
+        TImage *BallImage;
+        TTimer *BallTimer;
+        void __fastcall Player1UpTimerTimer(TObject *Sender);
+        void __fastcall Player1DownTimerTimer(TObject *Sender);
+        void __fastcall FormKeyDown(TObject *Sender, WORD &Key,
+          TShiftState Shift);
+        void __fastcall FormKeyUp(TObject *Sender, WORD &Key,
+          TShiftState Shift);
+        void __fastcall Player2UpTimerTimer(TObject *Sender);
+        void __fastcall Player2DownTimerTimer(TObject *Sender);
+        void __fastcall BallTimerTimer(TObject *Sender);
+        void __fastcall FormCreate(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
-        __fastcall TMatchBoard(TComponent* Owner);
+        __fastcall TMatchBoardForm(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TMatchBoard *MatchBoard;
+extern PACKAGE TMatchBoardForm *MatchBoardForm;
 //---------------------------------------------------------------------------
 #endif
  

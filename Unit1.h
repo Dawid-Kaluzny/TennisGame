@@ -14,7 +14,6 @@
 class TMatchBoardForm : public TForm
 {
 __published:	// IDE-managed Components
-        TImage *CourtImage;
         TImage *FansImage;
         TImage *CourtBackgroundImage;
         TLabel *SetsLabel;
@@ -30,6 +29,9 @@ __published:	// IDE-managed Components
         TTimer *Player1DownTimer;
         TTimer *Player2UpTimer;
         TTimer *Player2DownTimer;
+        TImage *CourtImage;
+        TImage *BallImage;
+        TTimer *BallTimer;
         void __fastcall Player1UpTimerTimer(TObject *Sender);
         void __fastcall Player1DownTimerTimer(TObject *Sender);
         void __fastcall FormKeyDown(TObject *Sender, WORD &Key,
@@ -38,6 +40,8 @@ __published:	// IDE-managed Components
           TShiftState Shift);
         void __fastcall Player2UpTimerTimer(TObject *Sender);
         void __fastcall Player2DownTimerTimer(TObject *Sender);
+        void __fastcall BallTimerTimer(TObject *Sender);
+        void __fastcall FormCreate(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
         __fastcall TMatchBoardForm(TComponent* Owner);
