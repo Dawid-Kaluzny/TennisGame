@@ -41,6 +41,7 @@ __published:	// IDE-managed Components
         void __fastcall Player2UpTimerTimer(TObject *Sender);
         void __fastcall Player2DownTimerTimer(TObject *Sender);
         void __fastcall BallTimerTimer(TObject *Sender);
+        void __fastcall FormCreate(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
         __fastcall TMatchBoardForm(TComponent* Owner);
