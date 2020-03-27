@@ -32,6 +32,8 @@ __published:	// IDE-managed Components
         TImage *CourtImage;
         TImage *BallImage;
         TTimer *BallTimer;
+        TImage *Player2PointImage;
+        TImage *Player1PointImage;
         void __fastcall Player1UpTimerTimer(TObject *Sender);
         void __fastcall Player1DownTimerTimer(TObject *Sender);
         void __fastcall FormKeyDown(TObject *Sender, WORD &Key,

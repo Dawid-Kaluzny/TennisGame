@@ -12,6 +12,7 @@ TMatchBoardForm *MatchBoardForm;
 
 int xBall = 15;
 int yBall = 15;
+bool doesPlayer1Serve = true;
 //---------------------------------------------------------------------------
 __fastcall TMatchBoardForm::TMatchBoardForm(TComponent* Owner)
         : TForm(Owner)
@@ -33,14 +34,33 @@ void bounceBall(TImage* RacketImage)
                 xBall = -1.07 * xBall;
                 yBall = 1.07 * yBall;
         }
+
         flightDirection = random(2) + 1;
-        switch(flightDirection)
+
+        if(flightDirection == 1)
         {
-                case 1:
-                        break;
-                case 2:
-                        yBall = -yBall; break;
+                yBall = -yBall;
         }
+}
+//---------------------------------------------------------------------------
+
+void serveBall()
+{
+        if(doesPlayer1Serve)
+        {
+                MatchBoardForm->BallImage->Left = 56;
+                xBall = 15;
+                yBall = 15;
+        }
+        else
+        {
+                MatchBoardForm->BallImage->Left = 808;
+                xBall = -15;
+                yBall = -15;
+        }
+        MatchBoardForm->BallImage->Top = random(MatchBoardForm->CourtImage->Height - MatchBoardForm->BallImage->Height) + MatchBoardForm->CourtImage->Top;
+        MatchBoardForm->BallImage->Visible = true;
+        MatchBoardForm->BallTimer->Enabled = true;
 }
 //---------------------------------------------------------------------------
 
@@ -106,8 +126,8 @@ void __fastcall TMatchBoardForm::BallTimerTimer(TObject *Sender)
         BallImage->Left += xBall;
         BallImage->Top += yBall;
 
-        if(BallImage->Top - 10 <= CourtImage->Top) yBall = -yBall;
-        if(BallImage->Top + BallImage->Height + 10 >= CourtImage->Top + CourtImage->Height) yBall = -yBall;
+        if(BallImage->Top <= CourtImage->Top) yBall = -yBall;
+        if(BallImage->Top + BallImage->Height >= CourtImage->Top + CourtImage->Height) yBall = -yBall;
 
         if((BallImage->Top + BallImage->Height/2 >= Racket1Image->Top) && (BallImage->Top + BallImage->Height/2 <= Racket1Image->Top + Racket1Image->Height) && (BallImage->Left - 10 <= Racket1Image->Left + Racket1Image->Width))
         {
@@ -123,7 +143,21 @@ void __fastcall TMatchBoardForm::BallTimerTimer(TObject *Sender)
 
         if((BallImage->Left + BallImage->Width <= Racket1Image->Left) || (BallImage->Left >= Racket2Image->Left + Racket2Image->Width))
         {
+                sndPlaySound("snd/Win.wav", SND_ASYNC);
                 BallTimer->Enabled = false;
+                BallImage->Visible = false;
+                if(BallImage->Left >= Racket2Image->Left + Racket2Image->Width)
+                {
+                        Player1PointImage->Visible = true;
+                }
+                else
+                {
+                        Player2PointImage->Visible = true;
+                }
+                Application->ProcessMessages(); Sleep(2500);
+                Player1PointImage->Visible = false;
+                Player2PointImage->Visible = false;
+                serveBall();
         }
 
 }
