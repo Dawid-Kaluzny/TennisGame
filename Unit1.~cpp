@@ -13,6 +13,10 @@ TMatchBoardForm *MatchBoardForm;
 int xBall = 15;
 int yBall = 15;
 bool doesPlayer1Serve = true;
+int player1Points = 0;
+int player2Points = 0;
+int player1Games = 0;
+int player2Games = 0;
 //---------------------------------------------------------------------------
 __fastcall TMatchBoardForm::TMatchBoardForm(TComponent* Owner)
         : TForm(Owner)
@@ -41,6 +45,65 @@ void bounceBall(TImage* RacketImage)
         {
                 yBall = -yBall;
         }
+}
+//---------------------------------------------------------------------------
+
+bool isGameWon(int &winPlayerPoints, int &losePlayerPoints)
+{
+        if(winPlayerPoints == 4 && losePlayerPoints  <= 2) return true;
+        else if(winPlayerPoints == 4 && losePlayerPoints == 4)
+        {
+                winPlayerPoints--;
+                losePlayerPoints--;
+        }
+        else if(winPlayerPoints == 5) return true;
+        return false;
+}
+//---------------------------------------------------------------------------
+
+bool isGameOver(int &winPlayerGames, int &losePlayerGames)
+{
+        if(winPlayerGames == 6 && losePlayerGames  <= 4) return true;
+        else if(winPlayerGames == 7) return true;
+        return false;
+}
+//---------------------------------------------------------------------------
+
+AnsiString viewScore(int &playerPoints)
+{
+        AnsiString playerScore;
+        switch(playerPoints)
+        {
+                case 0: playerScore = "0"; break;
+                case 1: playerScore = "15"; break;
+                case 2: playerScore = "30"; break;
+                case 3: playerScore = "40"; break;
+                case 4: playerScore = "AD"; break;
+        }
+        return playerScore;
+}
+//---------------------------------------------------------------------------
+
+void startNextRound()
+{
+        player1Points = 0;
+        player2Points = 0;
+        if(doesPlayer1Serve)
+                doesPlayer1Serve = false;
+        else
+                doesPlayer1Serve = true;
+}
+//---------------------------------------------------------------------------
+
+void viewWinPlayer(TImage* PlayerPointImage, TImage* PlayerWinImage)
+{
+        Application->ProcessMessages(); Sleep(2500);
+        PlayerPointImage->Visible = false;
+        MatchBoardForm->SetsLabel->Caption = "0 : 0";
+        Application->ProcessMessages(); Sleep(500);
+        sndPlaySound("snd/WinGame.wav", SND_ASYNC);
+        PlayerWinImage->Visible = true;
+        Application->ProcessMessages(); Sleep(9000);
 }
 //---------------------------------------------------------------------------
 
@@ -129,13 +192,13 @@ void __fastcall TMatchBoardForm::BallTimerTimer(TObject *Sender)
         if(BallImage->Top <= CourtImage->Top) yBall = -yBall;
         if(BallImage->Top + BallImage->Height >= CourtImage->Top + CourtImage->Height) yBall = -yBall;
 
-        if((BallImage->Top + BallImage->Height/2 >= Racket1Image->Top) && (BallImage->Top + BallImage->Height/2 <= Racket1Image->Top + Racket1Image->Height) && (BallImage->Left - 10 <= Racket1Image->Left + Racket1Image->Width))
+        if((BallImage->Top + BallImage->Height/2 >= Racket1Image->Top) && (BallImage->Top + BallImage->Height/2 <= Racket1Image->Top + Racket1Image->Height) && (BallImage->Left - 15 <= Racket1Image->Left + Racket1Image->Width))
         {
                 sndPlaySound("snd/Player1.wav", SND_ASYNC);
                 bounceBall(Racket1Image);
         }
 
-        if((BallImage->Top + BallImage->Height/2 >= Racket2Image->Top) && (BallImage->Top + BallImage->Height/2 <= Racket2Image->Top + Racket2Image->Height) && (BallImage->Left + BallImage->Width + 10 >= Racket2Image->Left))
+        if((BallImage->Top + BallImage->Height/2 >= Racket2Image->Top) && (BallImage->Top + BallImage->Height/2 <= Racket2Image->Top + Racket2Image->Height) && (BallImage->Left + BallImage->Width + 15 >= Racket2Image->Left))
         {
                 sndPlaySound("snd/Player2.wav", SND_ASYNC);
                 bounceBall(Racket2Image);
@@ -149,11 +212,36 @@ void __fastcall TMatchBoardForm::BallTimerTimer(TObject *Sender)
                 if(BallImage->Left >= Racket2Image->Left + Racket2Image->Width)
                 {
                         Player1PointImage->Visible = true;
+                        player1Points++;
+                        if(isGameWon(player1Points, player2Points))
+                        {
+                                player1Games++;
+                                GamesLabel->Caption = IntToStr(player1Games) + " : " + IntToStr(player2Games);
+                                if(isGameOver(player1Games, player2Games))
+                                {
+                                        viewWinPlayer(Player1PointImage, Player1WinImage);
+                                        return;
+                                }
+                                startNextRound();
+                        }
                 }
                 else
                 {
                         Player2PointImage->Visible = true;
+                        player2Points++;
+                        if(isGameWon(player2Points, player1Points))
+                        {
+                                player2Games++;
+                                GamesLabel->Caption = IntToStr(player1Games) + " : " + IntToStr(player2Games);
+                                if(isGameOver(player2Games, player1Games))
+                                {
+                                        viewWinPlayer(Player2PointImage, Player2WinImage);
+                                        return;
+                                }
+                                startNextRound();
+                        }
                 }
+                SetsLabel->Caption = viewScore(player1Points) + " : " + viewScore(player2Points);
                 Application->ProcessMessages(); Sleep(2500);
                 Player1PointImage->Visible = false;
                 Player2PointImage->Visible = false;
@@ -166,6 +254,15 @@ void __fastcall TMatchBoardForm::BallTimerTimer(TObject *Sender)
 void __fastcall TMatchBoardForm::FormCreate(TObject *Sender)
 {
         randomize();
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TMatchBoardForm::StartGameButtonClick(TObject *Sender)
+{
+        StartGameButton->Visible = false;
+        Application->ProcessMessages(); Sleep(800);
+        BallTimer->Enabled = true;
 }
 //---------------------------------------------------------------------------
 
