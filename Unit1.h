@@ -10,6 +10,7 @@
 #include <ExtCtrls.hpp>
 #include <Graphics.hpp>
 #include <jpeg.hpp>
+#include <Menus.hpp>
 //---------------------------------------------------------------------------
 class TMatchBoardForm : public TForm
 {
@@ -37,6 +38,10 @@ __published:	// IDE-managed Components
         TImage *Player1WinImage;
         TImage *Player2WinImage;
         TButton *StartGameButton;
+        TMainMenu *MainMenu;
+        TMenuItem *NewGame1;
+        TMenuItem *Options1;
+        TMenuItem *Exit1;
         void __fastcall Player1UpTimerTimer(TObject *Sender);
         void __fastcall Player1DownTimerTimer(TObject *Sender);
         void __fastcall FormKeyDown(TObject *Sender, WORD &Key,
@@ -48,6 +53,10 @@ __published:	// IDE-managed Components
         void __fastcall BallTimerTimer(TObject *Sender);
         void __fastcall FormCreate(TObject *Sender);
         void __fastcall StartGameButtonClick(TObject *Sender);
+        void __fastcall Options1Click(TObject *Sender);
+        void __fastcall NewGame1Click(TObject *Sender);
+        void __fastcall Exit1Click(TObject *Sender);
+        void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 private:	// User declarations
 public:		// User declarations
         __fastcall TMatchBoardForm(TComponent* Owner);

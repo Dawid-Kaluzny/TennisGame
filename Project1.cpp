@@ -4,6 +4,7 @@
 #pragma hdrstop
 //---------------------------------------------------------------------------
 USEFORM("Unit1.cpp", MatchBoardForm);
+USEFORM("Unit2.cpp", OptionsForm);
 //---------------------------------------------------------------------------
 WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
@@ -11,6 +12,7 @@ WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         {
                  Application->Initialize();
                  Application->CreateForm(__classid(TMatchBoardForm), &MatchBoardForm);
+                 Application->CreateForm(__classid(TOptionsForm), &OptionsForm);
                  Application->Run();
         }
         catch (Exception &exception)

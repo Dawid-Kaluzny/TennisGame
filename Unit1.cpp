@@ -4,6 +4,7 @@
 #pragma hdrstop
 
 #include "Unit1.h"
+#include "Unit2.h"
 #include "mmsystem.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -180,6 +181,17 @@ void __fastcall TMatchBoardForm::FormKeyUp(TObject *Sender, WORD &Key,
         if(Key == 'z' || Key == 'Z') Player1DownTimer->Enabled = false;
         if(Key == VK_UP) Player2UpTimer->Enabled = false;
         if(Key == VK_DOWN) Player2DownTimer->Enabled = false;
+        if(Key == 'p' || Key == 'P')
+        {
+                if(BallTimer->Enabled == true)
+                {
+                        BallTimer->Enabled = false;
+                }
+                else
+                {
+                        BallTimer->Enabled = true;
+                }
+        }
 }
 //---------------------------------------------------------------------------
 
@@ -252,6 +264,14 @@ void __fastcall TMatchBoardForm::BallTimerTimer(TObject *Sender)
 void __fastcall TMatchBoardForm::FormCreate(TObject *Sender)
 {
         randomize();
+        Application->MessageBox("Welcome to the game of tennis.\n\n"
+                        "The left player controls by pressing the A and Z keys.\n"
+                        "The right player controls by pressing the Up and Down arrows.\n"
+                        "To pause the game, press the P key.\n\n"
+                        "You are playing a match in the Wimbledon final.\n"
+                        "This is the oldest and most prestigious tennis tournament in the world.\n"
+                        "Do your best and win the championship!\n\n"
+                        "Good luck!", "Tennis",MB_OK);
 }
 //---------------------------------------------------------------------------
 
@@ -261,6 +281,52 @@ void __fastcall TMatchBoardForm::StartGameButtonClick(TObject *Sender)
         StartGameButton->Visible = false;
         Application->ProcessMessages(); Sleep(800);
         BallTimer->Enabled = true;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMatchBoardForm::Options1Click(TObject *Sender)
+{
+        OptionsForm->Visible = true;                
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMatchBoardForm::NewGame1Click(TObject *Sender)
+{
+        if(Application->MessageBox("Are you sure you want to start a new game?",
+        "Confirm", MB_YESNOCANCEL | MB_ICONQUESTION) == IDYES)
+        {
+                BallTimer->Enabled = false;
+                doesPlayer1Serve = true;
+                player1Points = 0;
+                player2Points = 0;
+                player1Games = 0;
+                player2Games = 0;
+                MatchBoardForm->GamesLabel->Caption = "0 : 0";
+                MatchBoardForm->SetsLabel->Caption = "0 : 0";
+                Application->ProcessMessages(); Sleep(100);
+                serveBall();
+        }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMatchBoardForm::Exit1Click(TObject *Sender)
+{
+        if(Application->MessageBox("Are you sure you want to close the program?",
+        "Confirm", MB_YESNO | MB_ICONQUESTION) == IDYES)
+        {
+                Application->Terminate();
+        }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMatchBoardForm::FormClose(TObject *Sender,
+      TCloseAction &Action)
+{
+        if(Application->MessageBox("Are you sure you want to close the program?",
+        "Confirm", MB_YESNO | MB_ICONQUESTION) == IDNO)
+        {
+                Action = caNone;
+        }
 }
 //---------------------------------------------------------------------------
 
