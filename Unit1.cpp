@@ -303,7 +303,9 @@ void __fastcall TMatchBoardForm::NewGame1Click(TObject *Sender)
                 player2Games = 0;
                 MatchBoardForm->GamesLabel->Caption = "0 : 0";
                 MatchBoardForm->SetsLabel->Caption = "0 : 0";
-                Application->ProcessMessages(); Sleep(100);
+                Player1WinImage->Visible = false;
+                Player2WinImage->Visible = false;
+                Application->ProcessMessages(); Sleep(500);
                 serveBall();
         }
 }
